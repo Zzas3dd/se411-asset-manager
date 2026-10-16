@@ -42,7 +42,10 @@ function App() {
             path="/assets"
             element={<AssetList assets={assets} deleteAsset={deleteAsset} />}
           />
-          <Route path="/add" element={<AddAsset addAsset={addAsset} />} />
+ <Route
+  path="/add"
+  element={<AddAsset addAsset={addAsset} assets={assets} />}
+/>
           <Route
             path="/edit/:id"
             element={<EditAsset assets={assets} updateAsset={updateAsset} />}

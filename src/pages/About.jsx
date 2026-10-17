@@ -1,4 +1,4 @@
-// TODO: put our real names and student IDs here
+
 const team = [
   { name: "Zaina Alasaad", id: "223410087" },
   { name: "Mariam Koubaa", id: "223410241" },

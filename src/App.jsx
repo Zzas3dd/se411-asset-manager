@@ -7,6 +7,7 @@ import AddAsset from "./pages/AddAsset";
 import EditAsset from "./pages/EditAsset";
 import About from "./pages/About";
 import startingAssets from "./data/assets";
+import AssetDetail from "./pages/AssetDetail";
 
 function App() {
   // All the assets are stored here, in one place.
@@ -51,6 +52,10 @@ function App() {
             element={<EditAsset assets={assets} updateAsset={updateAsset} />}
           />
           <Route path="/about" element={<About />} />
+          <Route path="/assets/:id" element={<AssetDetail assets={assets} />}
+              
+              />
+              
         </Routes>
       </div>
     </BrowserRouter>

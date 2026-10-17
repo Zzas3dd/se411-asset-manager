@@ -5,8 +5,13 @@ SE411 Project Part 1 (Fall 2026-27). A React app for managing company computers.
 ## Features
 
 - Menu to move between pages
-- View all assets
-- Add, edit and delete assets
+- View all assets in a table
+- View detailed information for each asset
+- Add new assets
+- Edit existing assets
+- Delete assets with confirmation
+- Search assets by name, serial number, or assigned employee
+- Filter assets by status
 - About page with the team members
 
 ## How to run

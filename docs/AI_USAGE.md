@@ -17,4 +17,12 @@ The project asked us to use AI tools for the requirements, design, code, documen
 
 ## Member 3
 
-(fill in)
+## Member 3
+
+| Task | Tool | Notes |
+| --- | --- | --- |
+| Asset list | ChatGPT | Built the asset table. |
+| Detail view | ChatGPT | Added the asset details page. |
+| Delete | ChatGPT | Added delete confirmation. |
+| Search and filter | ChatGPT | Added search and status filter. |
+| Tests | ChatGPT | Added tests for list, delete, search, and filter. |

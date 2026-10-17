@@ -4,18 +4,26 @@ The project asked us to use AI tools for the requirements, design, code, documen
 
 ## Member 1
 
-| Task | Tool | Notes |
-| --- | --- | --- |
-| Project setup, menu, routes, Home and About pages | Claude | (what you changed) |
-| Asset data and add, update, delete functions | Claude | (what you changed) |
-| Tests | Claude | Ran with `npm test` |
-| Architecture document | Claude | (what you changed) |
+| Task | AI Tool | Notes |
+|---|---|---|
+| Project Setup | ChatGPT | Assisted with planning the React project structure and organizing the application components. |
+| Navigation | ChatGPT | Assisted with reviewing React Router configuration and navigation between pages. |
+| Shared Asset State | ChatGPT | Assisted with reviewing the React state functions for adding, updating, and deleting assets. |
+| Home and About Pages | ChatGPT | Assisted with reviewing page structure and application navigation. |
+| Architecture | ChatGPT | Assisted with reviewing the component structure, routes, and data flow documentation. |
+
+
 
 ## Member 2
 
-(fill in)
 
-## Member 3
+| Task | AI Tool | Notes |
+|---|---|---|
+| Add Asset | ChatGPT | Assisted with the Add Asset form, required-field validation, duplicate serial number checks, and purchase date validation. |
+| Edit Asset | ChatGPT | Assisted with the Edit Asset form, prefilled fields, update logic, and validation. |
+| Tests | ChatGPT | Assisted with writing and debugging Add/Edit tests using Vitest and React Testing Library. |
+| Requirements | ChatGPT | Assisted with drafting and reviewing the requirements specification. |
+
 
 ## Member 3
 

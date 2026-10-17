@@ -2,77 +2,165 @@
 
 ## Overview
 
-Asset Manager is a React app for managing company computers. It is built with Vite and uses React Router for the menu. In Part 1 the data is stored in a JavaScript array, so it resets when the page is refreshed.
+Asset Manager is a React application for managing company IT assets, including laptops, desktops, and monitors. It is built using Vite and React Router for navigation.
 
-## Folder structure
+In Part 1, asset data is stored in React state. Changes are temporary and reset when the page is refreshed.
 
-```
+The application supports viewing, adding, editing, and deleting assets, as well as searching and filtering the asset list.
+
+## Folder Structure
+
+```text
 src/
-  main.jsx            starts the app
-  App.jsx             holds the asset list and the routes
-  index.css           styles
-  App.test.jsx        tests
+  main.jsx                 Starts the application
+  App.jsx                  Manages asset state and routes
+  index.css                Application styles
+  App.test.jsx             Navigation and application tests
+  AssetForms.test.jsx      Add and Edit Asset tests
+  AssetList.test.jsx       Asset list and delete tests
+
   components/
-    NavBar.jsx        the menu
+    NavBar.jsx             Navigation menu
+
   pages/
-    Home.jsx          home page with totals
-    AssetList.jsx     list of assets with delete
-    AddAsset.jsx      form to add an asset
-    EditAsset.jsx     form to edit an asset
-    About.jsx         team names and student IDs
+    Home.jsx               Home page with asset totals
+    AssetList.jsx          Displays, searches, filters, and deletes assets
+    AssetDetail.jsx        Displays information about one asset
+    AddAsset.jsx           Form for adding an asset
+    EditAsset.jsx          Form for editing an asset
+    About.jsx              Team names and student IDs
+
   data/
-    assets.js         starting list of assets
+    assets.js              Initial asset records
 ```
 
-## How the parts fit together
+## How the Parts Fit Together
 
-```
+```text
 main.jsx
    |
- App.jsx  (assets list + addAsset, updateAsset, deleteAsset)
+ App.jsx (assets state + CRUD functions)
    |
-   |-- NavBar (menu, shown on every page)
+   |-- NavBar (navigation menu)
    |
    |-- Routes
-         /           -> Home       (gets assets)
-         /assets     -> AssetList  (gets assets, deleteAsset)
-         /add        -> AddAsset   (gets addAsset)
-         /edit/:id   -> EditAsset  (gets assets, updateAsset)
-         /about      -> About
+         /             -> Home
+         /assets       -> AssetList
+         /assets/:id   -> AssetDetail
+         /add          -> AddAsset
+         /edit/:id     -> EditAsset
+         /about        -> About
 ```
 
-## Data
+### Component Responsibilities
 
-The list of assets is stored in `App.jsx` with `useState`. Each asset is an object:
+| Component | Responsibility |
+|---|---|
+| App | Stores asset state, manages CRUD functions, and configures routes |
+| NavBar | Provides navigation between pages |
+| Home | Displays asset summary information |
+| AssetList | Displays assets and provides search, filtering, and deletion |
+| AssetDetail | Displays detailed information about a selected asset |
+| AddAsset | Adds new assets after validating input |
+| EditAsset | Updates existing assets after validating input |
+| About | Displays team member information |
+
+## Data Management
+
+The asset list is stored in `App.jsx` using React's `useState` hook.
+
+Each asset is represented by a JavaScript object.
 
 | Field | Example |
-| --- | --- |
+|---|---|
 | id | 1 |
 | name | Dell Latitude 5440 |
-| type | Laptop, Desktop or Monitor |
+| type | Laptop, Desktop, or Monitor |
 | serialNumber | DL5440-8XK21 |
-| assignedTo | Sara Alqahtani (empty if not assigned) |
-| status | In Use, In Stock, Under Repair or Retired |
+| assignedTo | Sara Alqahtani |
+| status | In Use, In Stock, Under Repair, or Retired |
 | purchaseDate | 2024-02-11 |
 
-`App.jsx` has three functions that change the list. They are passed to the pages as props.
+### CRUD Functions
 
-| Function | What it does |
-| --- | --- |
-| `addAsset(newAsset)` | Gives the asset an id and adds it to the list |
-| `updateAsset(updatedAsset)` | Replaces the asset that has the same id |
-| `deleteAsset(id)` | Removes the asset with that id |
+`App.jsx` contains three functions for modifying asset data.
 
-The functions always create a new array instead of changing the old one, because React only updates the screen when the state gets a new value.
+| Function | Description |
+|---|---|
+| `addAsset(newAsset)` | Generates an ID and adds a new asset |
+| `updateAsset(updatedAsset)` | Updates an existing asset by ID |
+| `deleteAsset(id)` | Removes an asset by ID |
 
-## Why the data is in App.jsx
+These functions update React state by creating new arrays instead of directly modifying the existing array.
 
-All pages need the same list. Keeping it in `App.jsx`, the parent of every page, means there is only one copy. When one page changes it, every page sees the change.
+### Data Flow
+
+The application follows a parent-to-child data flow.
+
+1. `App.jsx` stores the asset list.
+2. Asset data and relevant functions are passed to pages through props.
+3. Pages display the data and invoke functions when users perform actions.
+4. React updates the interface when the asset state changes.
+
+Examples:
+
+- `Home` receives `assets`.
+- `AssetList` receives `assets` and `deleteAsset`.
+- `AssetDetail` receives the information needed to display the selected asset.
+- `AddAsset` receives `addAsset` and `assets`.
+- `EditAsset` receives `assets` and `updateAsset`.
+
+## Form Validation
+
+The Add Asset and Edit Asset components validate user input before saving.
+
+Validation includes:
+
+- Required fields cannot be empty.
+- Serial numbers must be unique, ignoring letter case.
+- Purchase dates must be valid.
+- Future purchase dates are rejected.
+- Employee assignment is optional.
+- Validation errors are displayed to users.
+
+The Edit Asset form also loads the existing asset information before editing.
 
 ## Testing
 
-Tests use Vitest and React Testing Library. They check that the menu shows all links, that each link opens the right page, and that the home page shows the correct total. Run them with `npm test`.
+The project uses **Vitest** and **React Testing Library** for automated testing.
+
+| Test File | Purpose |
+|---|---|
+| `App.test.jsx` | Tests navigation and application rendering |
+| `AssetForms.test.jsx` | Tests Add Asset and Edit Asset functionality and validation |
+| `AssetList.test.jsx` | Tests asset list functionality |
+
+The tests cover navigation, form validation, successful asset creation and editing, and asset list behavior.
+
+### Test Results
+
+- Test files: 3 passed
+- Automated tests: 21 passed
+- Failed tests: 0
+
+Run tests using:
+
+```bash
+npm run test
+```
+
+The production build can be verified using:
+
+```bash
+npm run build
+```
+
+The latest production build completed successfully.
 
 ## Part 2
 
-In Part 2, the three functions in `App.jsx` will call the backend instead of changing the array. The pages will not need many changes.
+In Part 2, the application will integrate with a Spring Boot backend.
+
+The current React state-based CRUD operations will be adapted to communicate with backend endpoints.
+
+This will allow asset data to be stored persistently rather than being lost when the page is refreshed.

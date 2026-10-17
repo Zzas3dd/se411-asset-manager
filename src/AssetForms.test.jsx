@@ -7,10 +7,6 @@ import { MemoryRouter, Routes, Route } from "react-router-dom";
 import App from "./App";
 import EditAsset from "./pages/EditAsset";
 
-// ========================================
-// ADD ASSET TESTS
-// ========================================
-
 test("Add Asset page displays the form", async () => {
   const user = userEvent.setup();
   render(<App />);
@@ -181,9 +177,9 @@ test("Add Asset saves a valid asset", async () => {
   ).toBeInTheDocument();
 });
 
-// ========================================
+
 // EDIT ASSET TEST DATA
-// ========================================
+
 
 const testAssets = [
   {
@@ -229,9 +225,9 @@ function renderEditForm(updateAsset = vi.fn()) {
   );
 }
 
-// ========================================
+
 // EDIT ASSET TESTS
-// ========================================
+
 
 test("Edit Asset prefills existing information", () => {
   renderEditForm();

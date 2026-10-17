@@ -1,5 +1,5 @@
 # Requirements Specification
-# Asset Management System — Requirements Specification
+
 
 **Course:** SE411 — Software Construction  
 **Project:** Asset Management System  

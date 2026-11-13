@@ -1,6 +1,9 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { vi } from "vitest";
 import App from "./App";
+import startingAssets from "./data/assets";
+import { mockAssetBackend } from "./test/mockBackend";
 
 test("menu shows all the links", () => {
   render(<App />);
@@ -24,9 +27,12 @@ test("clicking About opens the about page with the team", async () => {
 });
 
 test("clicking Assets opens the assets page", async () => {
+  // The asset list now loads its data from Spring Boot
+  mockAssetBackend(startingAssets);
   render(<App />);
   await userEvent.click(screen.getByRole("link", { name: "Assets" }));
-  expect(screen.getByText("Dell Latitude 5440")).toBeInTheDocument();
+  expect(await screen.findByText("Dell Latitude 5440")).toBeInTheDocument();
+  vi.unstubAllGlobals();
 });
 
 test("clicking Add Asset opens the add page", async () => {

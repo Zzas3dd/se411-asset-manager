@@ -139,19 +139,35 @@ test("Add Asset rejects future purchase dates", async () => {
 test("Add Asset saves a valid asset", async () => {
   const user = userEvent.setup();
 
-  // Pretend Spring Boot successfully saved the asset
-  const mockFetch = vi.fn().mockResolvedValue({
-    ok: true,
-    status: 201,
-    json: async () => ({
-      id: 100,
-      name: "ASUS Zenbook",
-      type: "Laptop",
-      serialNumber: "ASUS-NEW-123",
-      assignedTo: "",
-      status: "In Stock",
-      purchaseDate: "2026-01-10",
-    }),
+  const savedAsset = {
+    id: 100,
+    name: "ASUS Zenbook",
+    type: "Laptop",
+    serialNumber: "ASUS-NEW-123",
+    assignedTo: "",
+    status: "In Stock",
+    purchaseDate: "2026-01-10",
+  };
+
+  // Pretend Spring Boot successfully saved the asset (POST),
+  // then returns it in the paginated asset list (GET)
+  const mockFetch = vi.fn(async (url, options) => {
+    if (options?.method === "POST") {
+      return { ok: true, status: 201, json: async () => savedAsset };
+    }
+    return {
+      ok: true,
+      status: 200,
+      json: async () => ({
+        content: [savedAsset],
+        page: 0,
+        size: 5,
+        totalElements: 1,
+        totalPages: 1,
+        first: true,
+        last: true,
+      }),
+    };
   });
 
   vi.stubGlobal("fetch", mockFetch);

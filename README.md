@@ -11,8 +11,7 @@ SE411 Project (Fall 2026-27). A company computer asset management system.
 - View all assets in a paginated table (5 per page) loaded from Spring Boot
 - View detailed information for each asset, loaded by ID from Spring Boot
 - Add new assets (saved through the Spring Boot API)
-- Edit existing assets
-- Delete assets with confirmation
+- Edit existing assets (loaded and updated through the Spring Boot API)
 - Search assets by name, serial number, or assigned employee (across all pages)
 - Filter assets by status (across all pages)
 - About page with the team members
@@ -94,7 +93,7 @@ Base URL: `http://localhost:8080`
 Asset fields: `id`, `name`, `type`, `serialNumber`, `assignedTo`, `status`,
 `purchaseDate` (format `YYYY-MM-DD`).
 
-Validation errors (400) return `{ "error": "message" }`. 404 and 500 return an empty body, so the API does not reveal internal details.
+Validation errors (400) return `{ "error": "message" }`. For the GET endpoints, 404 and 500 return an empty body, so the API does not reveal internal details. PUT returns `{ "error": "Asset not found." }` with its 404 so the edit form can show the message.
 
 ### GET /api/assets/{id}
 
@@ -179,6 +178,7 @@ GET /api/assets?page=0&size=5&sort=purchaseDate,desc
 GET /api/assets?page=0&size=5&search=lenovo
 GET /api/assets?page=0&size=5&status=In%20Use
 ```
+
 ### PUT /api/assets/{id}
 
 Updates an existing asset. Send all fields (the `id` in the body is ignored;

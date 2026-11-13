@@ -13,10 +13,22 @@ test("menu shows all the links", () => {
   expect(screen.getByRole("link", { name: "About" })).toBeInTheDocument();
 });
 
-test("home page shows the total number of assets", () => {
+test("home page shows the total number of assets from the backend", async () => {
+  const fetchMock = mockAssetBackend(startingAssets);
   render(<App />);
   expect(screen.getByText("Total Assets")).toBeInTheDocument();
-  expect(screen.getByText("6")).toBeInTheDocument();
+  expect(await screen.findByText("6")).toBeInTheDocument();
+  // App loads every asset in one request (max page size is 100)
+  expect(String(fetchMock.mock.calls[0][0])).toContain("/api/assets?page=0&size=100");
+  vi.unstubAllGlobals();
+});
+
+test("edit page loads the asset from the backend", async () => {
+  mockAssetBackend(startingAssets);
+  window.history.pushState({}, "", "/edit/2");
+  render(<App />);
+  expect(await screen.findByDisplayValue("Lenovo ThinkPad T14")).toBeInTheDocument();
+  vi.unstubAllGlobals();
 });
 
 test("clicking About opens the about page with the team", async () => {

@@ -1,9 +1,6 @@
 # Asset Manager
 
-SE411 Project (Fall 2026-27). A company computer asset management system.
 
-- Part 1: React frontend.
-- Part 2: Java Spring Boot backend with REST APIs, connected to the React frontend.
 
 ## Features
 

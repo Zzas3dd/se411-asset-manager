@@ -135,46 +135,83 @@ test("Add Asset rejects future purchase dates", async () => {
   );
 });
 
+
 test("Add Asset saves a valid asset", async () => {
   const user = userEvent.setup();
-  render(<App />);
 
-  await user.click(
-    screen.getByRole("link", { name: "Add Asset" })
-  );
+  // Pretend Spring Boot successfully saved the asset
+  const mockFetch = vi.fn().mockResolvedValue({
+    ok: true,
+    status: 201,
+    json: async () => ({
+      id: 100,
+      name: "ASUS Zenbook",
+      type: "Laptop",
+      serialNumber: "ASUS-NEW-123",
+      assignedTo: "",
+      status: "In Stock",
+      purchaseDate: "2026-01-10",
+    }),
+  });
 
-  await user.type(
-    screen.getByLabelText("Asset Name"),
-    "ASUS Zenbook"
-  );
+  vi.stubGlobal("fetch", mockFetch);
 
-  await user.selectOptions(
-    screen.getByLabelText("Asset Type"),
-    "Laptop"
-  );
+  try {
+    render(<App />);
 
-  await user.type(
-    screen.getByLabelText("Serial Number"),
-    "ASUS-NEW-123"
-  );
+    await user.click(
+      screen.getByRole("link", { name: "Add Asset" })
+    );
 
-  await user.selectOptions(
-    screen.getByLabelText("Status"),
-    "In Stock"
-  );
+    await user.type(
+      screen.getByLabelText("Asset Name"),
+      "ASUS Zenbook"
+    );
 
-  await user.type(
-    screen.getByLabelText("Purchase Date"),
-    "2026-01-10"
-  );
+    await user.selectOptions(
+      screen.getByLabelText("Asset Type"),
+      "Laptop"
+    );
 
-  await user.click(
-    screen.getByRole("button", { name: "Add Asset" })
-  );
+    await user.type(
+      screen.getByLabelText("Serial Number"),
+      "ASUS-NEW-123"
+    );
 
-  expect(
-    screen.getByText("ASUS Zenbook")
-  ).toBeInTheDocument();
+    await user.selectOptions(
+      screen.getByLabelText("Status"),
+      "In Stock"
+    );
+
+    await user.type(
+      screen.getByLabelText("Purchase Date"),
+      "2026-01-10"
+    );
+
+    await user.click(
+      screen.getByRole("button", { name: "Add Asset" })
+    );
+
+    // Verify that React sent the asset to Spring Boot
+    expect(mockFetch).toHaveBeenCalledWith(
+      "http://localhost:8080/api/assets",
+      expect.objectContaining({
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+    );
+
+    // Verify that the saved asset appears in the list
+    expect(
+      await screen.findByText("ASUS Zenbook")
+    ).toBeInTheDocument();
+
+  } finally {
+    // Restore fetch so other tests are unaffected
+    vi.unstubAllGlobals();
+  }
 });
 
 

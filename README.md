@@ -181,7 +181,7 @@ GET /api/assets?page=0&size=5&status=In%20Use
 ```
 ## Test results
 
-Run on 14 November 2026 (Java 22, Node 22).
+
 
 | Suite | Command | Result |
 | --- | --- | --- |

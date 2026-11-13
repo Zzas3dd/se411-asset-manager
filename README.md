@@ -179,7 +179,6 @@ GET /api/assets?page=0&size=5&sort=purchaseDate,desc
 GET /api/assets?page=0&size=5&search=lenovo
 GET /api/assets?page=0&size=5&status=In%20Use
 ```
-
 ### PUT /api/assets/{id}
 
 Updates an existing asset. Send all fields (the `id` in the body is ignored;
@@ -217,6 +216,16 @@ Validation (same rules as POST):
 | 200 OK | The asset was updated |
 | 400 Bad Request | Invalid or missing fields, or duplicate serial number. Body: `{ "error": "message" }` |
 | 404 Not Found | No asset has this ID. Body: `{ "error": "Asset not found." }` |
+
+## Test results
+
+| Suite | Command | Result |
+| --- | --- | --- |
+| Backend (JUnit 5 + Mockito) | `cd backend && ./mvnw test` | 48 tests, 0 failures, BUILD SUCCESS |
+| Frontend (Vitest + RTL) | `npm test` | 40 tests in 5 files, all passed |
+
+Backend breakdown: AddAssetService 6, AddAssetController 3, AssetQueryService 19,
+AssetQueryController 8, UpdateAssetService 7, UpdateAssetController 4, context load 1.
 
 ## Documents
 

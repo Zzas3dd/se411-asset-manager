@@ -179,7 +179,17 @@ GET /api/assets?page=0&size=5&sort=purchaseDate,desc
 GET /api/assets?page=0&size=5&search=lenovo
 GET /api/assets?page=0&size=5&status=In%20Use
 ```
+## Test results
 
+Run on 14 November 2026 (Java 22, Node 22).
+
+| Suite | Command | Result |
+| --- | --- | --- |
+| Backend (JUnit 5 + Mockito) | `cd backend && ./mvnw test` | 48 tests, 0 failures, BUILD SUCCESS |
+| Frontend (Vitest + RTL) | `npm test` | 40 tests in 5 files, all passed |
+
+Backend breakdown: AddAssetService 6, AddAssetController 3, AssetQueryService 19,
+AssetQueryController 8, UpdateAssetService 7, UpdateAssetController 4, context load 1.
 ## Documents
 
 - [Architecture](docs/ARCHITECTURE.md)

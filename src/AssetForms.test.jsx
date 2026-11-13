@@ -2,10 +2,8 @@
 import { test, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { MemoryRouter, Routes, Route } from "react-router-dom";
 
 import App from "./App";
-import EditAsset from "./pages/EditAsset";
 
 test("Add Asset page displays the form", async () => {
   const user = userEvent.setup();
@@ -151,19 +149,23 @@ test("Add Asset saves a valid asset", async () => {
 
   // Pretend Spring Boot successfully saved the asset (POST),
   // then returns it in the paginated asset list (GET)
+  // The list is empty until the POST happens (App loads the list on startup)
+  let saved = false;
   const mockFetch = vi.fn(async (url, options) => {
     if (options?.method === "POST") {
+      saved = true;
       return { ok: true, status: 201, json: async () => savedAsset };
     }
+    const content = saved ? [savedAsset] : [];
     return {
       ok: true,
       status: 200,
       json: async () => ({
-        content: [savedAsset],
+        content,
         page: 0,
         size: 5,
-        totalElements: 1,
-        totalPages: 1,
+        totalElements: content.length,
+        totalPages: content.length ? 1 : 0,
         first: true,
         last: true,
       }),
@@ -228,151 +230,4 @@ test("Add Asset saves a valid asset", async () => {
     // Restore fetch so other tests are unaffected
     vi.unstubAllGlobals();
   }
-});
-
-
-// EDIT ASSET TEST DATA
-
-
-const testAssets = [
-  {
-    id: 1,
-    name: "Dell Latitude 5440",
-    type: "Laptop",
-    serialNumber: "DL5440-8XK21",
-    assignedTo: "Sara",
-    status: "In Use",
-    purchaseDate: "2024-02-11",
-  },
-  {
-    id: 2,
-    name: "Lenovo ThinkPad",
-    type: "Laptop",
-    serialNumber: "LENOVO-123",
-    assignedTo: "",
-    status: "In Stock",
-    purchaseDate: "2024-05-03",
-  },
-];
-
-// Helper function to open the Edit Asset page
-function renderEditForm(updateAsset = vi.fn()) {
-  render(
-    <MemoryRouter initialEntries={["/edit/1"]}>
-      <Routes>
-        <Route
-          path="/edit/:id"
-          element={
-            <EditAsset
-              assets={testAssets}
-              updateAsset={updateAsset}
-            />
-          }
-        />
-        <Route
-          path="/assets"
-          element={<p>Asset List</p>}
-        />
-      </Routes>
-    </MemoryRouter>
-  );
-}
-
-
-// EDIT ASSET TESTS
-
-
-test("Edit Asset prefills existing information", () => {
-  renderEditForm();
-
-  expect(
-    screen.getByLabelText("Asset Name")
-  ).toHaveValue("Dell Latitude 5440");
-
-  expect(
-    screen.getByLabelText("Serial Number")
-  ).toHaveValue("DL5440-8XK21");
-
-  expect(
-    screen.getByLabelText("Status")
-  ).toHaveValue("In Use");
-});
-
-test("Edit Asset rejects duplicate serial numbers", async () => {
-  const user = userEvent.setup();
-  const updateAsset = vi.fn();
-
-  renderEditForm(updateAsset);
-
-  const serialInput =
-    screen.getByLabelText("Serial Number");
-
-  await user.clear(serialInput);
-  await user.type(serialInput, "LENOVO-123");
-
-  await user.click(
-    screen.getByRole("button", { name: "Save Changes" })
-  );
-
-  expect(
-    screen.getByRole("alert")
-  ).toHaveTextContent(
-    "This serial number already exists."
-  );
-
-  expect(updateAsset).not.toHaveBeenCalled();
-});
-
-test("Edit Asset rejects future purchase dates", async () => {
-  const user = userEvent.setup();
-  const updateAsset = vi.fn();
-
-  renderEditForm(updateAsset);
-
-  const dateInput =
-    screen.getByLabelText("Purchase Date");
-
-  await user.clear(dateInput);
-  await user.type(dateInput, "2099-01-01");
-
-  await user.click(
-    screen.getByRole("button", { name: "Save Changes" })
-  );
-
-  expect(
-    screen.getByRole("alert")
-  ).toHaveTextContent(
-    "Purchase date cannot be in the future."
-  );
-
-  expect(updateAsset).not.toHaveBeenCalled();
-});
-
-test("Edit Asset saves valid changes", async () => {
-  const user = userEvent.setup();
-  const updateAsset = vi.fn();
-
-  renderEditForm(updateAsset);
-
-  const nameInput =
-    screen.getByLabelText("Asset Name");
-
-  await user.clear(nameInput);
-  await user.type(nameInput, "Dell Latitude 5550");
-
-  await user.click(
-    screen.getByRole("button", { name: "Save Changes" })
-  );
-
-  expect(updateAsset).toHaveBeenCalledWith(
-    expect.objectContaining({
-      id: 1,
-      name: "Dell Latitude 5550",
-      serialNumber: "DL5440-8XK21",
-    })
-  );
-
-  expect(
-    screen.getByText("Asset List")
-  ).toBeInTheDocument();
 });

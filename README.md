@@ -179,9 +179,45 @@ GET /api/assets?page=0&size=5&sort=purchaseDate,desc
 GET /api/assets?page=0&size=5&search=lenovo
 GET /api/assets?page=0&size=5&status=In%20Use
 ```
+### PUT /api/assets/{id}
+
+Updates an existing asset. Send all fields (the `id` in the body is ignored;
+the ID in the URL is used).
+
+```
+PUT /api/assets/1
+Content-Type: application/json
+```
+
+```json
+{
+  "name": "Dell Latitude 5550",
+  "type": "Laptop",
+  "serialNumber": "DL5440-8XK21",
+  "assignedTo": "Sara Alqahtani",
+  "status": "In Stock",
+  "purchaseDate": "2024-02-11"
+}
+```
+
+Returns the updated asset (same shape as `GET /api/assets/{id}`).
+
+Validation (same rules as POST):
+
+- `name`, `type`, `serialNumber`, `status`, `purchaseDate` are required
+- `type`: `Laptop`, `Desktop` or `Monitor`
+- `status`: `In Use`, `In Stock`, `Under Repair` or `Retired`
+- `purchaseDate` cannot be in the future
+- `serialNumber` must not belong to another asset (not case-sensitive).
+  Keeping the asset's own serial number is allowed.
+
+| Status | When |
+| --- | --- |
+| 200 OK | The asset was updated |
+| 400 Bad Request | Invalid or missing fields, or duplicate serial number. Body: `{ "error": "message" }` |
+| 404 Not Found | No asset has this ID. Body: `{ "error": "Asset not found." }` |
+
 ## Test results
-
-
 
 | Suite | Command | Result |
 | --- | --- | --- |
@@ -190,6 +226,7 @@ GET /api/assets?page=0&size=5&status=In%20Use
 
 Backend breakdown: AddAssetService 6, AddAssetController 3, AssetQueryService 19,
 AssetQueryController 8, UpdateAssetService 7, UpdateAssetController 4, context load 1.
+
 ## Documents
 
 - [Architecture](docs/ARCHITECTURE.md)

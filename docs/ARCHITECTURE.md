@@ -159,8 +159,60 @@ The latest production build completed successfully.
 
 ## Part 2
 
-In Part 2, the application will integrate with a Spring Boot backend.
+Part 2 introduces a Java Spring Boot backend that communicates with the existing React frontend through REST APIs.
 
-The current React state-based CRUD operations will be adapted to communicate with backend endpoints.
+Member 1 implemented the Add Asset functionality, including:
 
-This will allow asset data to be stored persistently rather than being lost when the page is refreshed.
+* Asset.java — Defines the asset data model.
+* AssetStore.java — Stores assets in a Java in-memory collection.
+* AddAssetService.java — Validates and saves new assets.
+* AddAssetController.java — Handles POST requests.
+* CorsConfig.java — Allows React to communicate with Spring Boot.
+
+The Add Asset API uses POST /api/assets.
+
+It returns HTTP 201 for successful creation and HTTP 400 for invalid information.
+
+The backend validates required fields, duplicate serial numbers, asset types, statuses, and purchase dates.
+
+The existing AddAsset.jsx was updated to send POST requests to Spring Boot using fetch().
+
+The backend currently stores data in memory, so data is lost when Spring Boot restarts. Full backend integration will be completed by the other team members.
+
+
+## Part 2 — Backend Testing
+
+The backend uses JUnit and Mockito for automated testing.
+
+Member 1 created the following test files:
+
+* AddAssetServiceTest.java — Tests successful asset creation, required fields, duplicate serial numbers, future dates, invalid types, and invalid statuses.
+* AddAssetControllerTest.java — Tests HTTP 201 and HTTP 400 responses.
+
+The generated AssetmanagerApplicationTests.java verifies that the Spring Boot application context loads.
+
+All backend tests passed successfully.
+
+Run backend tests from the backend folder:
+
+./mvnw test
+
+The React Add Asset test was also updated to mock the Spring Boot response using Vitest.
+
+Latest frontend test results:
+
+* Test files: 3 passed
+* Tests: 21 passed
+* Failed: 0
+
+Run the applications:
+
+Spring Boot:
+
+./mvnw spring-boot:run
+
+React:
+
+npm run dev
+
+Spring Boot runs on port 8080, while React runs on port 5173.

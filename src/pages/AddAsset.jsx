@@ -27,7 +27,7 @@ function AddAsset({ addAsset, assets }) {
     setError("");
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
 
     // Check required fields
@@ -78,18 +78,46 @@ function AddAsset({ addAsset, assets }) {
       return;
     }
 
-    // Add the new asset
+    // Prepare the asset information
     setError("");
 
-    addAsset({
+    const newAsset = {
       ...formData,
       name: formData.name.trim(),
       serialNumber: formData.serialNumber.trim(),
       assignedTo: formData.assignedTo.trim(),
-    });
+    };
 
-    // Return to asset list
-    navigate("/assets");
+    // Send the new asset to Spring Boot
+    try {
+      const response = await fetch(
+        "http://localhost:8080/api/assets",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newAsset),
+        }
+      );
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        setError(result.error || "Failed to add asset.");
+        return;
+      }
+
+      // Temporarily update the React list
+      // until shared backend integration is completed
+      addAsset(result);
+
+      // Return to asset list
+      navigate("/assets");
+
+    } catch (error) {
+      setError("Cannot connect to the Spring Boot server.");
+    }
   }
 
   return (
